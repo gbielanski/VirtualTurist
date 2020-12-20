@@ -12,13 +12,11 @@ import CoreData
 
 class TravelLocationMapViewController: UIViewController {
 
-  let mapSettingsKey = "mapSettingsLey"
-
   @IBOutlet weak var mapView: MKMapView!
 
   override func viewDidLoad() {
     super.viewDidLoad()
-    restoreMapPosition()
+    restoreMapPosition(mapView: mapView)
     mapView.delegate = self
 
     let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(longPressed))
@@ -47,7 +45,7 @@ class TravelLocationMapViewController: UIViewController {
 extension TravelLocationMapViewController: MKMapViewDelegate {
   func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool){
     let mapSettings = MapSettings(latitude: mapView.region.center.latitude, longitude: mapView.region.center.longitude, latitudeDelta: mapView.region.span.latitudeDelta, longitudeDelta: mapView.region.span.longitudeDelta)
-    UserDefaults.standard.set(mapSettings.toDictionary(), forKey: mapSettingsKey)
+    UserDefaults.standard.set(mapSettings.toDictionary(), forKey: getMapSettingsKey())
   }
 
   func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
@@ -69,19 +67,6 @@ extension TravelLocationMapViewController: MKMapViewDelegate {
     print("Pin tapped")
     if let annotation = view.annotation as? MKPointAnnotation {
         self.performSegue(withIdentifier: "showPhotoAlbum", sender: annotation)
-    }
-  }
-
-}
-
-extension TravelLocationMapViewController {
-  func restoreMapPosition(){
-    if let mapSettingsDictionary = UserDefaults.standard.object(forKey: mapSettingsKey) as? [String: Double]{
-      let mapSettings = MapSettings.fromDictionary(dictionary: mapSettingsDictionary)
-      let span = MKCoordinateSpan(latitudeDelta: mapSettings.latitudeDelta, longitudeDelta: mapSettings.longitudeDelta)
-      let coordinate = CLLocationCoordinate2D(latitude: mapSettings.latitude, longitude: mapSettings.longitude)
-      let region = MKCoordinateRegion(center: coordinate, span: span)
-      mapView.setRegion(region, animated: false)
     }
   }
 }
