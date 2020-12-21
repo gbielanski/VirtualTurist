@@ -22,6 +22,12 @@ class PhotoAlbumViewController: UIViewController {
     if let annotation = annotation {
       mapView.addAnnotation(annotation)
     }
+
+    if let lat = annotation?.coordinate.latitude, let lon = annotation?.coordinate.latitude {
+      FlickrClient.getPhotosList(lat: lat, lon: lon){ (photos, error) in
+
+      }
+    }
   }
 }
 
