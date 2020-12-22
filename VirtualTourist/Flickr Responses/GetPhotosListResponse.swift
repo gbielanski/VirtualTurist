@@ -10,8 +10,5 @@ import Foundation
 
 class GetPhotosListResponse: Codable {
   let photos : PhotosList
-
-  enum CodingKeys: String, CodingKey{
-    case photos
-  }
+  let stat: String
 }

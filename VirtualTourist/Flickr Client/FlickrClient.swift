@@ -86,13 +86,15 @@ class FlickrClient {
   }
 
   @discardableResult class func taskForGETRequest<ResponseType: Decodable>(url: URL, responseType: ResponseType.Type, completion: @escaping (ResponseType?, Error?) -> Void) -> URLSessionTask{
-    let task = URLSession.shared.dataTask(with: url) { data, response, error in
+    let url1 = URL(string: "https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=cc074c0cfe1f5f0d69b85cdf6b05442f&lat=52.25164625673966&lon=21.052382403498882&radius=20&per_page=15&page=0&format=json&nojsoncallback=1&extras=url_m")!
+    let task = URLSession.shared.dataTask(with: url1) { data, response, error in
       guard let data = data else {
         DispatchQueue.main.async {
           completion(nil, error)
         }
         return
       }
+      print(String(decoding: data, as: UTF8.self))
       let decoder = JSONDecoder()
       do {
         let responseObject = try decoder.decode(ResponseType.self, from: data)
@@ -101,6 +103,7 @@ class FlickrClient {
         }
       } catch {
         do {
+          print(error.localizedDescription)
           print("errorResponse")
           let errorResponse = try decoder.decode(FlickrErrorResponse.self, from: data)
           DispatchQueue.main.async {

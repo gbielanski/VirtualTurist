@@ -9,9 +9,7 @@
 import Foundation
 
 class PhotosList: Codable {
-  let page: Int
-  let pages: String
-  let perPage: Int
+  let page, pages, perPage: Int
   let total: String
   let photo: [Photo]
 
