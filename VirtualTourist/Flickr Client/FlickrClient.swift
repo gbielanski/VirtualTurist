@@ -86,6 +86,19 @@ class FlickrClient {
     return task
   }
 
+  class func downloadPosterImage(path: String, completionHandler: @escaping (Data?, Error?) -> Void){
+
+    if let url = URL(string: path) {
+      let download = URLSession.shared.dataTask(with: url){ (data, _, error) in
+          DispatchQueue.main.async {
+              completionHandler(data, error)
+          }
+      }
+
+      download.resume()
+    }
+  }
+
   @discardableResult class func taskForGETRequest<ResponseType: Decodable>(url: URL, responseType: ResponseType.Type, completion: @escaping (ResponseType?, Error?) -> Void) -> URLSessionTask{
     let task = URLSession.shared.dataTask(with: url) { data, response, error in
       guard let data = data else {

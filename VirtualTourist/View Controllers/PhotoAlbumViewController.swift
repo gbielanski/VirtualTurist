@@ -27,17 +27,28 @@ class PhotoAlbumViewController: UIViewController {
       mapView.addAnnotation(annotation)
     }
 
+    imagesVisiblility(visible: false)
+
     if let lat = annotation?.coordinate.latitude, let lon = annotation?.coordinate.latitude {
       FlickrClient.getPhotosList(lat: lat, lon: lon){ (photos, error) in
 
         if let error = error {
           print(error.localizedDescription)
+          self.imagesVisiblility(visible: false)
         }
 
         self.photos = photos?.photos
-        self.collectionView.reloadData()
+
+        if (Int(photos?.total ?? "0") ?? 0) > 0 {
+          self.imagesVisiblility(visible: true)
+          self.collectionView.reloadData()
+        }
       }
     }
+  }
+
+  func imagesVisiblility(visible: Bool){
+    collectionView.isHidden = !visible
   }
 }
 
@@ -62,12 +73,22 @@ extension PhotoAlbumViewController: UICollectionViewDelegate, UICollectionViewDa
   func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
     let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PhotoCollectionViewCell", for: indexPath) as! PhotoCollectionViewCell
     let photo = photos![(indexPath as NSIndexPath).row]
-
     cell.photoImage.image = UIImage(named: "placeholder")
+    FlickrClient.downloadPosterImage(path: photo.url){
+      (data, error) in
+      guard let data = data else {
+        return
+      }
+
+      let image = UIImage(data: data)
+      cell.photoImage?.image = image
+      cell.setNeedsLayout()
+    }
+
     return cell
   }
 
   func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-      return self.photos?.count ?? 0
+    return self.photos?.count ?? 0
   }
 }
