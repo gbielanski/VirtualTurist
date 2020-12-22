@@ -11,13 +11,13 @@ import Foundation
 class PhotosList: Codable {
   let page, pages, perPage: Int
   let total: String
-  let photo: [Photo]
+  let photos: [Photo]
 
   enum CodingKeys: String, CodingKey{
     case page
     case pages
     case perPage = "perpage"
     case total
-    case photo
+    case photos = "photo"
   }
 }

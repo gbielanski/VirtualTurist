@@ -42,7 +42,8 @@ class FlickrClient {
     static let smallMediumImageSize = "url_m"
     static var pageNumber : Int {
       get {
-        return Int.random(in: 0..<10)
+        //return Int.random(in: 0..<10)
+        return 1
       }
     }
 
@@ -86,8 +87,7 @@ class FlickrClient {
   }
 
   @discardableResult class func taskForGETRequest<ResponseType: Decodable>(url: URL, responseType: ResponseType.Type, completion: @escaping (ResponseType?, Error?) -> Void) -> URLSessionTask{
-    let url1 = URL(string: "https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=cc074c0cfe1f5f0d69b85cdf6b05442f&lat=52.25164625673966&lon=21.052382403498882&radius=20&per_page=15&page=0&format=json&nojsoncallback=1&extras=url_m")!
-    let task = URLSession.shared.dataTask(with: url1) { data, response, error in
+    let task = URLSession.shared.dataTask(with: url) { data, response, error in
       guard let data = data else {
         DispatchQueue.main.async {
           completion(nil, error)
