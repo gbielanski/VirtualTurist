@@ -14,8 +14,11 @@ class PhotoAlbumViewController: UIViewController {
 
   @IBOutlet weak var collectionView: UICollectionView!
   @IBOutlet weak var mapView: MKMapView!
+  @IBOutlet weak var newCollectionButton: UIButton!
+  @IBOutlet weak var noImagesLabel: UILabel!
+
   var annotation: MKPointAnnotation?
-  var photos: [Photo]? = nil
+  var photos: [PhotoData]? = nil
 
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -28,6 +31,7 @@ class PhotoAlbumViewController: UIViewController {
     }
 
     imagesVisiblility(visible: false)
+    newCollectionButton.isEnabled = false
 
     if let lat = annotation?.coordinate.latitude, let lon = annotation?.coordinate.latitude {
       FlickrClient.getPhotosList(lat: lat, lon: lon){ (photos, error) in
@@ -36,6 +40,8 @@ class PhotoAlbumViewController: UIViewController {
           print(error.localizedDescription)
           self.imagesVisiblility(visible: false)
         }
+
+        self.newCollectionButton.isEnabled = true
 
         self.photos = photos?.photos
 
@@ -49,6 +55,7 @@ class PhotoAlbumViewController: UIViewController {
 
   func imagesVisiblility(visible: Bool){
     collectionView.isHidden = !visible
+    noImagesLabel.isHidden = visible
   }
 }
 

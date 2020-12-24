@@ -151,6 +151,8 @@
                     <connections>
                         <outlet property="collectionView" destination="4o5-nO-S6B" id="E0h-oc-8px"/>
                         <outlet property="mapView" destination="vBZ-a5-TMY" id="6mx-Oe-J8f"/>
+                        <outlet property="newCollectionButton" destination="hzT-wI-kf2" id="Zbh-HC-XUh"/>
+                        <outlet property="noImagesLabel" destination="i3V-JB-ndm" id="Rod-2w-PFW"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="n0v-ED-6kH" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

@@ -8,7 +8,7 @@
 
 import Foundation
 
-class Photo: Codable {
+class PhotoData: Codable {
   let id, owner, secret, server: String
   let farm: Int
   let title: String
