@@ -18,11 +18,10 @@ class TravelLocationMapViewController: UIViewController {
 
   var fetchedResultsController: NSFetchedResultsController<Pin>!
 
-
   fileprivate func setupFetchedResultController() {
     let fetchRequest: NSFetchRequest<Pin> = Pin.fetchRequest()
-    let sortDespriptor = NSSortDescriptor(key: "latitude", ascending: false)
-    fetchRequest.sortDescriptors = [sortDespriptor]
+    //let sortDespriptor = NSSortDescriptor(key: "latitude", ascending: false)
+    fetchRequest.sortDescriptors = []
 
     fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: dataController.viewContext, sectionNameKeyPath: nil, cacheName: "pins")
     fetchedResultsController.delegate = self
@@ -81,6 +80,7 @@ class TravelLocationMapViewController: UIViewController {
       let photoAlbymVC = segue.destination as! PhotoAlbumViewController
       let annotation = sender as! MKPointAnnotation
       photoAlbymVC.annotation = annotation
+      photoAlbymVC.dataController = dataController
     }
   }
 }

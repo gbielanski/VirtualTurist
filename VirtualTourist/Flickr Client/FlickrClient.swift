@@ -38,12 +38,13 @@ class FlickrClient {
   enum Endpoints {
     static let base = "https://www.flickr.com/services/rest/"
     static let method = "flickr.photos.search"
-    static let perPage = 10
+    static let perPage = 30
     static let smallMediumImageSize = "url_m"
+    static let radius = 30
     static var pageNumber : Int {
       get {
         //return Int.random(in: 0..<10)
-        return 1
+        return 0
       }
     }
 
@@ -59,6 +60,7 @@ class FlickrClient {
         "&per_page=\(Endpoints.perPage)" +
         "&page=\(Endpoints.pageNumber)" +
         "&extras=\(Endpoints.smallMediumImageSize)" +
+        "&radius=\(Endpoints.radius)" +
         "&format=json&nojsoncallback=?"
       }
     }
