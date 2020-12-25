@@ -117,11 +117,14 @@ class PhotoAlbumViewController: UIViewController {
           return
         }
 
-        let photo = Photo(context: self.dataController.viewContext)
-        photo.path = photoData.url
-        photo.image = data
-        photo.pin = self.pin!
-        try? self.dataController.viewContext.save()
+        self.fetchedResultsController.sections?[0].objects?.forEach{ photoObject in
+
+          let photo = photoObject as! Photo
+          if photo.path == photoData.url {
+            photo.image = data
+            try? self.dataController.viewContext.save()
+          }
+        }
       }
     }
 
@@ -196,6 +199,7 @@ extension PhotoAlbumViewController: NSFetchedResultsControllerDelegate{
       collectionView.deleteItems(at: [indexPath!])
       break
     case .update:
+      collectionView.reloadItems(at: [indexPath!])
       break
     case .move:
       break
