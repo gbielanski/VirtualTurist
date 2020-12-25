@@ -127,14 +127,13 @@
 		E151313B258D4070009C8B6E /* VirtualTourist */ = {
 			isa = PBXGroup;
 			children = (
+				E17F43D22596194F004FB054 /* Storyboards */,
+				E151313C258D4070009C8B6E /* AppDelegate.swift */,
 				E1E1628A2590A7E800B59A9E /* Flickr Responses */,
 				E1E16287259099BB00B59A9E /* Flickr Client */,
 				E1425644258F6C8B0081A0F0 /* Model */,
 				E1425643258F6C710081A0F0 /* View Controllers */,
-				E151313C258D4070009C8B6E /* AppDelegate.swift */,
-				E1513142258D4070009C8B6E /* Main.storyboard */,
 				E1513148258D4071009C8B6E /* Assets.xcassets */,
-				E151314A258D4071009C8B6E /* LaunchScreen.storyboard */,
 				E151314D258D4071009C8B6E /* Info.plist */,
 				E1E162852590961000B59A9E /* Flickr-Info.plist */,
 			);
@@ -148,6 +147,15 @@
 				E1513158258D4071009C8B6E /* Info.plist */,
 			);
 			path = VirtualTouristTests;
+			sourceTree = "<group>";
+		};
+		E17F43D22596194F004FB054 /* Storyboards */ = {
+			isa = PBXGroup;
+			children = (
+				E151314A258D4071009C8B6E /* LaunchScreen.storyboard */,
+				E1513142258D4070009C8B6E /* Main.storyboard */,
+			);
+			path = Storyboards;
 			sourceTree = "<group>";
 		};
 		E1E16287259099BB00B59A9E /* Flickr Client */ = {

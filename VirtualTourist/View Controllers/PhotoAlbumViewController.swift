@@ -23,6 +23,15 @@ class PhotoAlbumViewController: UIViewController {
 
   var fetchedResultsController: NSFetchedResultsController<Photo>!
 
+  @IBAction func newCollectionButtonTapped(_ sender: Any) {
+    let photos = fetchedResultsController.fetchedObjects
+    photos?.forEach{ photo in
+      dataController.viewContext.delete(photo)
+      try? dataController.viewContext.save()
+    }
+    downloadPhotos()
+  }
+
   fileprivate func setupFetchedResultController() {
     let fetchRequest: NSFetchRequest<Photo> = Photo.fetchRequest()
     fetchRequest.sortDescriptors = []
@@ -62,12 +71,15 @@ class PhotoAlbumViewController: UIViewController {
         collectionView.reloadData()
       }
     } else {
-      if let lat = annotation?.coordinate.latitude, let lon = annotation?.coordinate.latitude {
-        FlickrClient.getPhotosList(lat: lat, lon: lon, completion: handleGetPhotosList(photos:error:))
-      }
+      downloadPhotos()
     }
   }
-  
+
+  func downloadPhotos(){
+    if let lat = annotation?.coordinate.latitude, let lon = annotation?.coordinate.latitude {
+      FlickrClient.getPhotosList(lat: lat, lon: lon, completion: handleGetPhotosList(photos:error:))
+    }
+  }
 
   override func viewWillDisappear(_ animated: Bool) {
     super.viewWillDisappear(animated)
