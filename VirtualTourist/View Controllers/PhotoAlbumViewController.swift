@@ -139,7 +139,12 @@ extension PhotoAlbumViewController: UICollectionViewDelegate, UICollectionViewDa
 
   func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
     return fetchedResultsController.sections?[0].numberOfObjects ?? 0
+  }
 
+  func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    let photo = fetchedResultsController.object(at: indexPath as IndexPath)
+    dataController.viewContext.delete(photo)
+    try? dataController.viewContext.save()
   }
 }
 
@@ -152,6 +157,7 @@ extension PhotoAlbumViewController: NSFetchedResultsControllerDelegate{
       collectionView.insertItems(at: [newIndexPath!])
       break
     case .delete:
+      collectionView.deleteItems(at: [indexPath!])
       break
     case .update:
       break
