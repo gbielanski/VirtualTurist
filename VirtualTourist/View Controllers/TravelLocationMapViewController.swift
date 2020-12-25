@@ -78,8 +78,8 @@ class TravelLocationMapViewController: UIViewController {
   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
     if segue.identifier == "showPhotoAlbum" {
       let photoAlbymVC = segue.destination as! PhotoAlbumViewController
-      let annotation = sender as! MKPointAnnotation
-      photoAlbymVC.annotation = annotation
+      let pin = sender as! Pin
+      photoAlbymVC.pin = pin
       photoAlbymVC.dataController = dataController
     }
   }
@@ -107,10 +107,25 @@ extension TravelLocationMapViewController: MKMapViewDelegate {
     return pinView
   }
 
+  func pinFromAnnotation(latitude: Double, longitude: Double) -> Pin?{
+    let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Pin")
+    let latitudePredicate = NSPredicate(format: "latitude == %lf", latitude)
+    let longitudePredicate = NSPredicate(format: "longitude == %lf", longitude)
+
+    fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [latitudePredicate, longitudePredicate])
+    fetchRequest.sortDescriptors = [NSSortDescriptor(key: "latitude", ascending: true)]
+    if let mapPins = try? dataController.viewContext.fetch(fetchRequest) as? [Pin] {
+      return mapPins[0]
+    }
+
+    return nil
+  }
+
   func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
     print("Pin tapped")
     if let annotation = view.annotation as? MKPointAnnotation {
-      self.performSegue(withIdentifier: "showPhotoAlbum", sender: annotation)
+      let pin: Pin = pinFromAnnotation(latitude: annotation.coordinate.latitude, longitude: annotation.coordinate.longitude)!
+      self.performSegue(withIdentifier: "showPhotoAlbum", sender: pin)
     }
   }
 }

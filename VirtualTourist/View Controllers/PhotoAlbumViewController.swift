@@ -19,7 +19,8 @@ class PhotoAlbumViewController: UIViewController {
 
   var dataController: DataController!
 
-  var annotation: MKPointAnnotation?
+  //var annotation: MKPointAnnotation?
+  var pin: Pin?
 
   var fetchedResultsController: NSFetchedResultsController<Photo>!
 
@@ -32,9 +33,19 @@ class PhotoAlbumViewController: UIViewController {
     downloadPhotos()
   }
 
+  func pinToAnnotation(pin: Pin) -> MKPointAnnotation {
+    let a = MKPointAnnotation()
+    a.coordinate.longitude = pin.longitude
+    a.coordinate.latitude = pin.latitude
+    return a
+  }
+
   fileprivate func setupFetchedResultController() {
     let fetchRequest: NSFetchRequest<Photo> = Photo.fetchRequest()
+
+    let predicate = NSPredicate(format: "pin == %@", pin!)
     fetchRequest.sortDescriptors = []
+    fetchRequest.predicate = predicate
 
     fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: dataController.viewContext, sectionNameKeyPath: nil, cacheName: "photos")
     fetchedResultsController.delegate = self
@@ -55,28 +66,25 @@ class PhotoAlbumViewController: UIViewController {
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
     restoreMapPosition(mapView: mapView)
-    if let annotation = annotation {
-      mapView.addAnnotation(annotation)
-    }
+    mapView.addAnnotation(pinToAnnotation(pin: pin!))
+
 
     imagesVisiblility(visible: false)
     newCollectionButton.isEnabled = false
 
     setupFetchedResultController()
 
-    if fetchedResultsController.sections?.count ?? 0 > 0 {
-      if fetchedResultsController.sections?[0].numberOfObjects ?? 0 > 0 {
-        imagesVisiblility(visible: true)
-        newCollectionButton.isEnabled = true
-        collectionView.reloadData()
-      }
+    if fetchedResultsController.sections?[0].numberOfObjects ?? 0 > 0 {
+      imagesVisiblility(visible: true)
+      newCollectionButton.isEnabled = true
+      collectionView.reloadData()
     } else {
       downloadPhotos()
     }
   }
 
   func downloadPhotos(){
-    if let lat = annotation?.coordinate.latitude, let lon = annotation?.coordinate.latitude {
+    if let lat = pin?.latitude, let lon = pin?.longitude {
       FlickrClient.getPhotosList(lat: lat, lon: lon, completion: handleGetPhotosList(photos:error:))
     }
   }
@@ -90,10 +98,17 @@ class PhotoAlbumViewController: UIViewController {
     if let error = error {
       print(error.localizedDescription)
       self.imagesVisiblility(visible: false)
-      
     }
 
     self.newCollectionButton.isEnabled = true
+
+    photos?.photos.forEach{photoData in
+      let photo = Photo(context: self.dataController.viewContext)
+      photo.path = photoData.url
+      photo.image = nil
+      photo.pin = pin
+      try? self.dataController.viewContext.save()
+    }
 
     photos?.photos.forEach{photoData in
       FlickrClient.downloadPosterImage(path: photoData.url){
@@ -105,6 +120,7 @@ class PhotoAlbumViewController: UIViewController {
         let photo = Photo(context: self.dataController.viewContext)
         photo.path = photoData.url
         photo.image = data
+        photo.pin = self.pin!
         try? self.dataController.viewContext.save()
       }
     }
@@ -142,11 +158,19 @@ extension PhotoAlbumViewController: UICollectionViewDelegate, UICollectionViewDa
   func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
     let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PhotoCollectionViewCell", for: indexPath) as! PhotoCollectionViewCell
     let photo = fetchedResultsController.object(at: indexPath)
-    let image = UIImage(data: photo.image!)
-    cell.photoImage?.image = image
+
+    cell.photoImage?.image = getImage(photo: photo)
     cell.setNeedsLayout()
 
-      return cell
+    return cell
+  }
+
+  func getImage(photo: Photo) -> UIImage {
+    if let imageData = photo.image {
+      return UIImage(data: imageData)!
+    }else{
+      return UIImage(named: "placeholder")!
+    }
   }
 
   func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
