@@ -43,8 +43,7 @@ class FlickrClient {
     static let radius = 30
     static var pageNumber : Int {
       get {
-        //return Int.random(in: 0..<10)
-        return 0
+        return Int.random(in: 0..<10)
       }
     }
 

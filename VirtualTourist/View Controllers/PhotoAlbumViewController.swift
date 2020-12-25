@@ -19,7 +19,6 @@ class PhotoAlbumViewController: UIViewController {
 
   var dataController: DataController!
 
-  //var annotation: MKPointAnnotation?
   var pin: Pin?
 
   var fetchedResultsController: NSFetchedResultsController<Photo>!
@@ -34,10 +33,10 @@ class PhotoAlbumViewController: UIViewController {
   }
 
   func pinToAnnotation(pin: Pin) -> MKPointAnnotation {
-    let a = MKPointAnnotation()
-    a.coordinate.longitude = pin.longitude
-    a.coordinate.latitude = pin.latitude
-    return a
+    let annotation = MKPointAnnotation()
+    annotation.coordinate.longitude = pin.longitude
+    annotation.coordinate.latitude = pin.latitude
+    return annotation
   }
 
   fileprivate func setupFetchedResultController() {
