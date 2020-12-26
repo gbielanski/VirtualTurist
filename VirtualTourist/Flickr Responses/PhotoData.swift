@@ -15,7 +15,7 @@ class PhotoData: Codable {
   let isPublic, isFriend, isFamily: Int
   let url: String
   let height, width: Int
-
+  
   enum CodingKeys: String, CodingKey{
     case id
     case owner

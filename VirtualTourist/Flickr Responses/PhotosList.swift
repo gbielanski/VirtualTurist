@@ -12,7 +12,7 @@ class PhotosList: Codable {
   let page, pages, perPage: Int
   let total: String
   let photos: [PhotoData]
-
+  
   enum CodingKeys: String, CodingKey{
     case page
     case pages

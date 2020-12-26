@@ -20,7 +20,6 @@ class TravelLocationMapViewController: UIViewController {
 
   fileprivate func setupFetchedResultController() {
     let fetchRequest: NSFetchRequest<Pin> = Pin.fetchRequest()
-    //let sortDespriptor = NSSortDescriptor(key: "latitude", ascending: false)
     fetchRequest.sortDescriptors = []
 
     fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: dataController.viewContext, sectionNameKeyPath: nil, cacheName: "pins")
@@ -122,7 +121,6 @@ extension TravelLocationMapViewController: MKMapViewDelegate {
   }
 
   func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
-    print("Pin tapped")
     if let annotation = view.annotation as? MKPointAnnotation {
       let pin: Pin = pinFromAnnotation(latitude: annotation.coordinate.latitude, longitude: annotation.coordinate.longitude)!
       self.performSegue(withIdentifier: "showPhotoAlbum", sender: pin)

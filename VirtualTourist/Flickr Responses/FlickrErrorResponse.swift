@@ -12,7 +12,7 @@ class FlickrErrorResponse: Codable {
   let stat: String
   let code: Int
   let message: String
-
+  
   enum CodingKeys: String, CodingKey{
     case stat
     case code
@@ -21,7 +21,7 @@ class FlickrErrorResponse: Codable {
 }
 
 extension FlickrErrorResponse : LocalizedError{
-    var errorDescription: String? {
-        return message
-    }
+  var errorDescription: String? {
+    return message
+  }
 }

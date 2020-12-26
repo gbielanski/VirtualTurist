@@ -24,7 +24,7 @@ extension MapSettings {
       "longitudeDelta" : longitudeDelta,
     ]
   }
-
+  
   static func fromDictionary(dictionary: [String:Double]) -> MapSettings{
     return MapSettings(
       latitude: dictionary["latitude"] ?? 0.0,

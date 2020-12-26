@@ -69,38 +69,32 @@ class FlickrClient {
     }
   }
 
-  class func getPhotosList(lat: Double, lon: Double, completion: @escaping (PhotosList?, Error?) -> Void) -> URLSessionTask {
-    print("Api key \(FlickrClient.apiKey)")
+  class func getPhotosList(lat: Double, lon: Double, completion: @escaping (PhotosList?, Error?) -> Void) {
     let url = Endpoints.getPhotosList("\(lat)", "\(lon)").url
-    print("url \(url)")
-    let task = taskForGETRequest(url: url, responseType: GetPhotosListResponse.self){ (response, error)
+    taskForGETRequest(url: url, responseType: GetPhotosListResponse.self){ (response, error)
       in
       if let response = response {
-        print("response")
         completion(response.photos, nil)
       }else{
         completion(nil, error)
-        print("reponse error")
       }
     }
-
-    return task
   }
 
   class func downloadPosterImage(path: String, completionHandler: @escaping (Data?, Error?) -> Void){
 
     if let url = URL(string: path) {
       let download = URLSession.shared.dataTask(with: url){ (data, _, error) in
-          DispatchQueue.main.async {
-              completionHandler(data, error)
-          }
+        DispatchQueue.main.async {
+          completionHandler(data, error)
+        }
       }
 
       download.resume()
     }
   }
 
-  @discardableResult class func taskForGETRequest<ResponseType: Decodable>(url: URL, responseType: ResponseType.Type, completion: @escaping (ResponseType?, Error?) -> Void) -> URLSessionTask{
+  class func taskForGETRequest<ResponseType: Decodable>(url: URL, responseType: ResponseType.Type, completion: @escaping (ResponseType?, Error?) -> Void){
     let task = URLSession.shared.dataTask(with: url) { data, response, error in
       guard let data = data else {
         DispatchQueue.main.async {
@@ -118,7 +112,6 @@ class FlickrClient {
       } catch {
         do {
           print(error.localizedDescription)
-          print("errorResponse")
           let errorResponse = try decoder.decode(FlickrErrorResponse.self, from: data)
           DispatchQueue.main.async {
             completion(nil, errorResponse)
@@ -131,6 +124,5 @@ class FlickrClient {
       }
     }
     task.resume()
-    return task
   }
 }
